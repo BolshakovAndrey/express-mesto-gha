@@ -13,7 +13,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 
 // подключаем мидлвары, роуты и всё остальное...
+app.use((req, res, next) => {
+  req.user = {
+    _id: '629fb6ffe0b35126d32f9087' // вставьте сюда _id созданного в предыдущем пункте пользователя
+  };
 
+  next();
+});
 
 
 app.listen(PORT, () => {
