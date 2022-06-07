@@ -1,0 +1,14 @@
+{
+  "name": "express-mesto-gha",
+  "author": "BolshakovAndrey",
+  "homepage": "https://bolshakovandrey.github.io/express-mesto-gha/",
+  "version": "1.0.0",
+  "dependencies": {
+    "eslint": "^8.17.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  },
+  "scripts": {
+    "lint": "npx eslint"
+  }
+}
