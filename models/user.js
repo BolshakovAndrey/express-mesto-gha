@@ -2,21 +2,21 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
-    type: 'string',
+    type: String,
     required: true,
     minLength: 2,
     maxLength: 30,
   },
   about: {
-    type: 'string',
+    type: String,
     required: true,
     minLength: 2,
     maxLength: 30,
   },
   avatar: {
-    type: 'string',
+    type: String,
     required: true,
-  }
+  },
 });
 
 // создаём модель и экспортируем её
