@@ -26,7 +26,7 @@ module.exports.createCard = (req, res) => {
 
 // удаляет карточку по идентификатору
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(StatusCodes.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
