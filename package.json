@@ -12,7 +12,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "description": "[![Tests](https://github.com/BolshakovAndrey/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/BolshakovAndrey/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/BolshakovAndrey/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/BolshakovAndrey/express-mesto-gha/actions/workflows/tests-14-sprint.yml) # Проект Mesto фронтенд + бэкенд",
+  "description": "Проект Место фронтенд + бэкенд",
   "main": "app.js",
   "repository": {
     "type": "git",

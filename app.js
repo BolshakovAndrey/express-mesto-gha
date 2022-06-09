@@ -7,8 +7,6 @@ const StatusCodes = require('./utils/utils');
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false,
 });
 
 const { PORT = 3000 } = process.env;
@@ -35,4 +33,7 @@ app.use((req, res) => {
   res.status(StatusCodes.NOT_FOUND).send({ message: 'Запрашиваемый ресурс не найден' });
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`App listening on port ${PORT}`);
+});
