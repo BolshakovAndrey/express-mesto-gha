@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Поле "name" должно быть заполнено'],
-    minlength: 2,
-    maxlength: 30,
+    required: [true, 'Поле название должно быть заполнено'],
+    minLength: [2, 'Минимальное количество букв в названии - 2'],
+    maxLength: [30, 'Минимальное количество букв в названии - 30'],
   },
   link: {
     type: String,
