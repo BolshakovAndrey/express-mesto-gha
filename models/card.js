@@ -9,7 +9,7 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String,
-    required: true,
+    required: [true, 'Добавьте URL карточки'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

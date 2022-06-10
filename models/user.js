@@ -9,13 +9,13 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    required: true,
+    required: [true, 'Укажите информацию о себе'],
     minLength: 2,
     maxLength: 30,
   },
   avatar: {
     type: String,
-    required: true,
+    required: [true, 'Добавьте аватар'],
   },
 });
 
