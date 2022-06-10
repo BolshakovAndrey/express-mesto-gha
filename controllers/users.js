@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(StatusCodes.CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при создании пользователя ${err.message}`});
+        res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при создании пользователя ${err.message}` });
         return;
       }
       res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
@@ -56,7 +56,7 @@ module.exports.updateProfile = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при обновлении профиля ${err.message}`});
+        res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при обновлении профиля ${err.message}` });
         return;
       }
       res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
