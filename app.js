@@ -38,7 +38,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCodes  = StatusCodes.SERVER_ERROR, message} = err;
+  const { statusCodes = StatusCodes.SERVER_ERROR, message } = err;
   res
     .status(statusCodes)
     .send({
