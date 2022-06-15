@@ -1,5 +1,40 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const StatusCodes = require('../utils/utils');
+
+// const { NODE_ENV, JWT_SECRET } = process.env;
+
+// аутентификация пользователей и создание JWT токена
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(StatusCodes.BAD_REQUEST)
+      .send({ message: 'Переданы некорректные данные при авторизации пользователя, нужны email и пароль' });
+    return;
+  }
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key', // NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+        { expiresIn: '7d' }, // токен будет просрочен через 1 неделю после создания
+      );
+
+      // вернём токен
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+      })
+        .end();
+    })
+    .catch((err) => {
+      res.status(StatusCodes.UNAUTHORIZED).send({ message: err.message });
+    });
+};
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res) => {
@@ -29,17 +64,31 @@ module.exports.getUserById = (req, res) => {
 
 // создаёт пользователя
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.status(StatusCodes.CREATED).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при создании пользователя ${err.message}` });
-        return;
-      }
-      res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-    });
+  if (!email || !password) {
+    res.status(StatusCodes.BAD_REQUEST)
+      .send({ message: 'Переданы некорректные данные при создании пользователя, нужны email и пароль' });
+    return;
+  }
+
+  // хешируем пароль
+  bcrypt.hash(req.body.password, 10)
+    // записываем хеш в базу
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    })
+
+      .then((user) => res.status(StatusCodes.CREATED).send(user))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(StatusCodes.BAD_REQUEST).send({ message: `Переданы некорректные данные при создании пользователя ${err.message}` });
+          return;
+        }
+        res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+      }));
 };
 
 // обновляет профиль
