@@ -23,13 +23,6 @@ app.use(express.urlencoded({
   extended: true,
 }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '629fb6ffe0b35126d32f9087', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-  next();
-});
-
 // роуты, не требующие авторизации,
 app.post('/signin', login);
 app.post('/signup', createUser);

@@ -43,9 +43,28 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
 };
 
+// возвращает информацию о текущем пользователе
+module.exports.currentUserInfo = (req, res) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        res.status(StatusCodes.NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' });
+        return;
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(StatusCodes.BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
+        return;
+      }
+      res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+    });
+};
+
 // возвращает пользователя по _id
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         res.status(StatusCodes.NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' });
