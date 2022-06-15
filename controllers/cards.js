@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const StatusCodes = require('../utils/utils');
+const StatusCodes = require('../utils/status-codes');
 
 // возвращает все карточки
 module.exports.getCards = (req, res) => {

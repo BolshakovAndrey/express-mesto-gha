@@ -1,7 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const StatusCodes = require('../utils/utils');
+// errors
+const ErrorTypes = require('../utils/error-types');
+const StatusCodes = require('../utils/status-codes');
+const StatusMessages = require('../utils/status-messages');
+const {
+  BadRequestError, UnauthorizedError, NotFoundError, ConflictError,
+} = require('../errors/index-err');
 
 // const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -37,48 +43,46 @@ module.exports.login = (req, res) => {
 };
 
 // возвращает всех пользователей
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' }));
+    .catch(next);
 };
 
 // возвращает информацию о текущем пользователе
-module.exports.currentUserInfo = (req, res) => {
+module.exports.currentUserInfo = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(StatusCodes.NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' });
-        return;
+        throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
-        return;
+      if (err.name === ErrorTypes.CAST) {
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
-      res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-    });
+      next(err);
+    })
+    .catch(next);
 };
 
 // возвращает пользователя по _id
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        res.status(StatusCodes.NOT_FOUND).send({ message: 'Пользователь по указанному id не найден' });
-        return;
+        throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(StatusCodes.BAD_REQUEST).send({ message: 'Переданы некорректные данные пользователя' });
-        return;
+      if (err.name === ErrorTypes.CAST) {
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
-      res.status(StatusCodes.SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-    });
+      next(err);
+    })
+    .catch(next);
 };
 
 // создаёт пользователя
