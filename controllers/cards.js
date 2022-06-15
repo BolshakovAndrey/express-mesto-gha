@@ -32,7 +32,17 @@ module.exports.deleteCard = (req, res) => {
         res.status(StatusCodes.NOT_FOUND).send({ message: 'Карточка с указанным id не найдена' });
         return;
       }
-      res.send(card);
+      // TODO check
+      if (card.owner !== req.user.name) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .send({ message: 'Вы не можете удалять карточки других пользователей' });
+      } else {
+        Card.deleteOne(card)
+          .then(() => res
+            .status(StatusCodes.SUCCESS)
+            .send({ message: 'Карточка успешно удалена' }));
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
