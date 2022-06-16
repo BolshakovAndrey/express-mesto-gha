@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const { celebrate, Joi } = require('celebrate');
 
 const validateSignup = celebrate({
@@ -26,14 +27,17 @@ const validateProfileUpdate = celebrate({
 
 const validateAvatarUpdate = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().required()
+      .regex(/ht{2}ps?:\/\/(w{3})?[\-\.~:\/\?#\[\]@!$&'\,;=\w]+#?\b/),
   }),
 });
 
 const validateCardCreation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required()
+      .regex(/ht{2}ps?:\/\/(w{3})?[\-\.~:\/\?#\[\]@!$&'\,;=\w]+#?\b/),
+
   }),
 });
 
