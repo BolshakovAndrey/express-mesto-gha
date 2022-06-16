@@ -93,7 +93,7 @@ module.exports.createUser = (req, res, next) => {
     throw new BadRequestError(StatusMessages.BAD_REQUEST);
   }
 
-  // хешируем пароль
+  // хэшируем пароль
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       User.create({
@@ -107,7 +107,7 @@ module.exports.createUser = (req, res, next) => {
             throw new ConflictError(StatusMessages.CONFLICT);
           }
           if (err.name === ErrorTypes.VALIDATION) {
-            throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err.message}`);
+            throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
           }
           next(err);
         })
@@ -131,7 +131,7 @@ module.exports.updateProfile = (req, res, next) => {
         throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       if (err.name === ErrorTypes.VALIDATION) {
-        throw new BadRequestError(`Переданы некорректные данные при обновлении профиля: ${err.message}`);
+        throw new BadRequestError(`Переданы некорректные данные при обновлении профиля: ${err}`);
       }
       next(err);
     })
@@ -154,7 +154,7 @@ module.exports.updateAvatar = (req, res, next) => {
         throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       if (err.name === ErrorTypes.VALIDATION) {
-        throw new BadRequestError(`Переданы некорректные данные при обновлении аватара: ${err.message}`);
+        throw new BadRequestError(`Переданы некорректные данные при обновлении аватара: ${err}`);
       }
       next(err);
     })
