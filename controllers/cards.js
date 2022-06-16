@@ -20,7 +20,9 @@ module.exports.createCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.status(StatusCodes.CREATED).send(card))
+    .then((card) => res
+      .status(StatusCodes.CREATED)
+      .send(card))
     .catch((err) => {
       if (err.name === ErrorTypes.VALIDATION) {
         throw new BadRequestError(`Переданы некорректные данные при создании карточки ${err.message}`);
@@ -38,7 +40,7 @@ module.exports.deleteCard = (req, res, next) => {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
       // TODO check
-      if (card.owner !== req.user.name) {
+      if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenError(StatusMessages.FORBIDDEN);
       } else {
         Card.deleteOne(card)

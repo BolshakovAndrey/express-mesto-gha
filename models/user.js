@@ -41,15 +41,12 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Поле пароль должно быть заполнено'],
-    // TODO исключить пароль из ответа сервера
-    // Но в случае аутентификации хеш пароля нужен.
-    // Чтобы это реализовать, после вызова метода модели,
-    // нужно добавить вызов метода select, передав ему строку +password:
-    select: false, // необходимо добавить поле select
+    minlength: 8,
+    select: false,
   },
 });
 
-userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email })
+userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email }).select('+password')
   .then((user) => {
     if (!user) {
       return Promise.reject(new Error('Неправильные почта или пароль'));
@@ -60,10 +57,17 @@ userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ e
         if (!matched) {
           return Promise.reject(new Error('Неправильные почта или пароль'));
         }
-
         return user;
       });
   });
+
+function toJSON() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
+
+userSchema.methods.toJSON = toJSON;
 
 // создаём модель и экспортируем её
 module.exports = mongoose.model('user', userSchema);

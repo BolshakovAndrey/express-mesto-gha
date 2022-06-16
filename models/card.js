@@ -7,15 +7,15 @@ const cardSchema = new mongoose.Schema({
     required: [true, 'Поле название должно быть заполнено'],
     minLength: [2, 'Минимальное количество букв в названии - 2'],
     maxLength: [30, 'Минимальное количество букв в названии - 30'],
+  },
+  link: {
+    type: String,
+    required: [true, 'Добавьте URL карточки'],
     validate: {
       validator(link) {
         return validator.isURL(link);
       },
     },
-  },
-  link: {
-    type: String,
-    required: [true, 'Добавьте URL карточки'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

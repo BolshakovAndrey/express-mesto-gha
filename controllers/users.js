@@ -98,7 +98,9 @@ module.exports.createUser = (req, res, next) => {
       User.create({
         name, about, avatar, email, password: hash,
       })
-        .then((user) => res.status(StatusCodes.CREATED).send(user))
+        .then((user) => res
+          .status(StatusCodes.CREATED)
+          .send(user))
         .catch((err) => {
           if (err.name === 'ErrorTypes.BASE_ERROR && err.code === StatusCodes.BASE_ERROR') {
             throw new ConflictError(StatusCodes.CONFLICT);
