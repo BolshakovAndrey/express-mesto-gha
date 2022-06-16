@@ -10,7 +10,7 @@ const StatusCodes = require('./utils/status-codes');
 const StatusMessages = require('./utils/status-messages');
 // validation
 const { validateSignup, validateSignin } = require('./middlewares/validators');
-const { NotFoundError } = require('./errors/index');
+const { NotFoundError } = require('./errors/index-err');
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
