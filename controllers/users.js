@@ -9,7 +9,7 @@ const {
   BadRequestError, UnauthorizedError, NotFoundError, ConflictError,
 } = require('../errors/index-err');
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../utils/constants');
 
 // аутентификация пользователей и создание JWT токена
 module.exports.login = (req, res, next) => {
@@ -24,7 +24,7 @@ module.exports.login = (req, res, next) => {
       // создадим токен
       const token = jwt.sign(
         { _id: user._id },
-        'some-secret-key', // NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+        JWT_SECRET,
         { expiresIn: '7d' }, // токен будет просрочен через 1 неделю после создания
       );
       // вернём токен
