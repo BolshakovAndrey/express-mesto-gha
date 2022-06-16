@@ -25,7 +25,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         JWT_SECRET,
-        { expiresIn: '7d' }, // токен будет просрочен через 1 неделю после создания
+        { expiresIn: '7d' },
       );
       // вернём токен
       res.cookie('jwt', token, {
@@ -48,8 +48,8 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 // возвращает информацию о текущем пользователе
-module.exports.currentUserInfo = (req, res, next) => {
-  User.findById(req.params.userId)
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
@@ -67,7 +67,7 @@ module.exports.currentUserInfo = (req, res, next) => {
 
 // возвращает пользователя по _id
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
@@ -86,27 +86,28 @@ module.exports.getUserById = (req, res, next) => {
 // создаёт пользователя
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    email, password, name, about, avatar,
   } = req.body;
 
   if (!email || !password) {
     throw new BadRequestError(StatusMessages.BAD_REQUEST);
   }
+
   // хешируем пароль
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       User.create({
-        name, about, avatar, email, password: hash,
+        email, password: hash, name, about, avatar,
       })
         .then((user) => res
           .status(StatusCodes.CREATED)
           .send(user))
         .catch((err) => {
-          if (err.name === 'ErrorTypes.CONFLICT && err.code === StatusCodes.CONFLICT') {
-            throw new ConflictError(StatusCodes.CONFLICT);
+          if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
+            throw new ConflictError(StatusMessages.CONFLICT);
           }
           if (err.name === ErrorTypes.VALIDATION) {
-            throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
+            throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err.message}`);
           }
           next(err);
         })

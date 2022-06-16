@@ -25,7 +25,7 @@ module.exports.createCard = (req, res, next) => {
       .send(card))
     .catch((err) => {
       if (err.name === ErrorTypes.VALIDATION) {
-        throw new BadRequestError(`Переданы некорректные данные при создании карточки ${err.message}`);
+        throw new BadRequestError(`Переданы некорректные данные при создании карточки: ${err.message}`);
       }
       next(err);
     })
@@ -34,19 +34,16 @@ module.exports.createCard = (req, res, next) => {
 
 // удаляет карточку по _id
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
-      // TODO check
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenError(StatusMessages.FORBIDDEN);
       } else {
         Card.deleteOne(card)
-          .then(() => res
-            .status(StatusCodes.SUCCESS)
-            .send({ message: StatusMessages.OK }));
+          .then(() => res.status(StatusCodes.OK).send({ message: StatusMessages.OK }));
       }
     })
     .catch((err) => {

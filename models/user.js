@@ -46,21 +46,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = (email, password) => this.findOne({ email }).select('+password')
-  .then((user) => {
-    if (!user) {
-      return Promise.reject(new Error('Неправильные почта или пароль'));
-    }
-
-    return bcrypt.compare(password, user.password)
-      .then((matched) => {
-        if (!matched) {
-          return Promise.reject(new Error('Неправильные почта или пароль'));
-        }
-        return user;
-      });
-  });
-
 function toJSON() {
   const obj = this.toObject();
   delete obj.password;
@@ -68,6 +53,24 @@ function toJSON() {
 }
 
 userSchema.methods.toJSON = toJSON;
+
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Неправильные почта или пароль'));
+          }
+
+          return user;
+        });
+    });
+};
 
 // создаём модель и экспортируем её
 module.exports = mongoose.model('user', userSchema);
