@@ -102,7 +102,7 @@ module.exports.createUser = (req, res, next) => {
           .status(StatusCodes.CREATED)
           .send(user))
         .catch((err) => {
-          if (err.name === 'ErrorTypes.BASE_ERROR && err.code === StatusCodes.BASE_ERROR') {
+          if (err.name === 'ErrorTypes.CONFLICT && err.code === StatusCodes.CONFLICT') {
             throw new ConflictError(StatusCodes.CONFLICT);
           }
           if (err.name === ErrorTypes.VALIDATION) {
