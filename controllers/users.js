@@ -35,7 +35,7 @@ module.exports.login = (req, res, next) => {
         .send({ token });
     })
     .catch((err) => {
-      throw new UnauthorizedError(`${err.message}`);
+      throw new UnauthorizedError(`${err}`);
     })
     .catch(next);
 };
