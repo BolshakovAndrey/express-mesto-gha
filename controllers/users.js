@@ -102,9 +102,10 @@ module.exports.createUser = (req, res, next) => {
         .then((user) => res
           .status(StatusCodes.CREATED)
           .send(user))
+        // eslint-disable-next-line consistent-return
         .catch((err) => {
           if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
-            res
+            return res
               .status(StatusCodes.CONFLICT)
               .send({ message: StatusMessages.CONFLICT });
           }
