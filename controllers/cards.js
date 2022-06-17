@@ -70,7 +70,10 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new BadRequestError(StatusMessages.INVALID_ID);
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send({ message: StatusMessages.INVALID_ID });
+        return;
       }
       next(err);
     })
