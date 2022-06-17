@@ -104,7 +104,7 @@ module.exports.createUser = (req, res, next) => {
           .send(user))
         .catch((err) => {
           if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
-            throw new ConflictError(StatusMessages.CONFLICT);
+            throw new ConflictError({ message: StatusMessages.CONFLICT});
           }
           if (err.name === ErrorTypes.VALIDATION) {
             throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
