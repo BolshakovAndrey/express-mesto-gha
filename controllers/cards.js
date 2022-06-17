@@ -48,7 +48,10 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new BadRequestError(StatusMessages.INVALID_ID);
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send({ message: StatusMessages.INVALID_ID });
+        return;
       }
       next(err);
     })
@@ -95,10 +98,10 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-          res
-              .status(StatusCodes.NOT_FOUND)
-              .send({ message: StatusMessages.INVALID_ID });
-          return;
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .send({ message: StatusMessages.INVALID_ID });
+        return;
       }
       next(err);
     })
