@@ -6,7 +6,7 @@ const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
 const {
-  BadRequestError, UnauthorizedError, NotFoundError, ConflictError,
+  BadRequestError, UnauthorizedError, NotFoundError,
 } = require('../errors/index-err');
 
 const { JWT_SECRET } = require('../utils/constants');
@@ -104,7 +104,9 @@ module.exports.createUser = (req, res, next) => {
           .send(user))
         .catch((err) => {
           if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
-            throw new ConflictError({ message: StatusMessages.CONFLICT});
+            res
+              .status(StatusCodes.CONFLICT)
+              .send({ message: StatusMessages.CONFLICT });
           }
           if (err.name === ErrorTypes.VALIDATION) {
             throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
