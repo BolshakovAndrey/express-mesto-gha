@@ -6,7 +6,7 @@ const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
 const {
-  BadRequestError, UnauthorizedError, NotFoundError,
+  BadRequestError, NotFoundError,
 } = require('../errors/index-err');
 
 const { JWT_SECRET } = require('../utils/constants');
@@ -35,7 +35,10 @@ module.exports.login = (req, res, next) => {
         .send({ token });
     })
     .catch((err) => {
-      throw new UnauthorizedError(`${err.message}`);
+      res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send({ message: StatusMessages.UNAUTHORIZED });
+      next(err);
     })
     .catch(next);
 };
