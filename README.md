@@ -53,4 +53,4 @@
 ## Frontend проекта Место на «React»:
 https://github.com/BolshakovAndrey/react-mesto-auth.git
 ## Демо фронтенда
-https://bolshakovandrey.github.io/
+https://bolshakovandrey.github.io/sign-in
