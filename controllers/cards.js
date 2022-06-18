@@ -4,7 +4,7 @@ const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
 const {
-  NotFoundError, ForbiddenError, BadRequestError,
+  NotFoundError, BadRequestError,
 } = require('../errors/index-err');
 
 // возвращает все карточки
@@ -40,10 +40,14 @@ module.exports.deleteCard = (req, res, next) => {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        throw new ForbiddenError(StatusMessages.FORBIDDEN);
+        res
+          .status(StatusCodes.FORBIDDEN)
+          .send({ message: StatusMessages.FORBIDDEN });
       } else {
         Card.deleteOne(card)
-          .then(() => res.status(StatusCodes.SUCCESS).send({ message: StatusMessages.SUCCESS }));
+          .then(() => res
+            .status(StatusCodes.SUCCESS)
+            .send({ message: StatusMessages.SUCCESS }));
       }
     })
     .catch((err) => {
