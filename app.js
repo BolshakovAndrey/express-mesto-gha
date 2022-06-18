@@ -10,8 +10,6 @@ const { login, createUser } = require('./controllers/users');
 // validation
 const { validateSignup, validateSignin } = require('./middlewares/validators');
 const StatusCodes = require('./utils/status-codes');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
