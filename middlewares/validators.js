@@ -19,7 +19,7 @@ const validateSignup = celebrate({
   }),
 });
 
-const validateSignin = celebrate({
+const validateSignIn = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
@@ -60,7 +60,7 @@ const validateCardId = celebrate({
 
 module.exports = {
   validateSignup,
-  validateSignin,
+  validateSignIn,
   validateUserId,
   validateProfileUpdate,
   validateAvatarUpdate,

@@ -3,9 +3,7 @@ const Card = require('../models/card');
 const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
-const {
-  NotFoundError, BadRequestError,
-} = require('../errors/index-err');
+const { NotFoundError, BadRequestError } = require('../errors/index-err');
 
 // возвращает все карточки
 module.exports.getCards = (req, res, next) => {

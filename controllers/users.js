@@ -5,10 +5,7 @@ const User = require('../models/user');
 const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
-const {
-  BadRequestError, NotFoundError,
-} = require('../errors/index-err');
-
+const { BadRequestError, NotFoundError } = require('../errors/index-err');
 const { JWT_SECRET } = require('../utils/constants');
 
 // аутентификация пользователей и создание JWT токена

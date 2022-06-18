@@ -1,4 +1,3 @@
-// Status codes
 module.exports = {
   SUCCESS: 200, // успешно выполнено
   CREATED: 201, // создано успешно

@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 // validation
-const { validateSignup, validateSignin } = require('./middlewares/validators');
+const { validateSignup, validateSignIn } = require('./middlewares/validators');
 const StatusCodes = require('./utils/status-codes');
 
 // подключаемся к серверу mongo
@@ -35,7 +35,7 @@ app.use(
   helmet(),
 );
 
-app.post('/signin', validateSignin, login);
+app.post('/signin', validateSignIn, login);
 app.post('/signup', validateSignup, createUser);
 
 app.use(auth);
