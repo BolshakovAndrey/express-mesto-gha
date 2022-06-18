@@ -8,6 +8,8 @@ const { login, createUser } = require('./controllers/users');
 // validation
 const { validateSignup, validateSignin } = require('./middlewares/validators');
 const StatusCodes = require('./utils/status-codes');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -25,6 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true,
 }));
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+  }),
+  helmet(),
+);
 
 app.post('/signin', validateSignin, login);
 app.post('/signup', validateSignup, createUser);
@@ -33,9 +42,6 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-// app.all('*', () => {
-//   throw new NotFoundError({ message: 'Запрашиваемый ресурс не найден' });
-// });
 app.use('*', (req, res, next) => {
   try {
     res
