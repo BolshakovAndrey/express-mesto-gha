@@ -1,6 +1,7 @@
-const validator = require('validator');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const isEmail = require('validator');
+const isUrl = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,10 +23,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Добавьте аватар'],
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator(val) {
-        // eslint-disable-next-line no-useless-escape
-        return /ht{2}ps?:\/\/(w{3})?[\-\.~:\/\?#\[\]@!$&'\,;=\w]+#?\b/gi.test(val);
-      },
+      validator: (url) => isUrl(url),
+      message: 'Некорректный адрес URL',
     },
   },
   email: {
@@ -33,10 +32,10 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Поле email  должно быть заполнено'],
     unique: true,
     validate: {
-      validator(email) {
-        return validator.isEmail(email);
-      },
+      validator: (email) => isEmail(email),
+      message: 'Некорректный адрес почты',
     },
+
   },
   password: {
     type: String,
