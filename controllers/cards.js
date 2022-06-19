@@ -33,17 +33,17 @@ module.exports.createCard = (req, res, next) => {
 // удаляет карточку по _id
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
-    .orFail(() => {
-      throw new NotFoundError(StatusMessages.NOT_FOUND);
-    })
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError(StatusMessages.NOT_FOUND);
+      }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        throw new ForbiddenError(StatusMessages.FORBIDDEN);
+        return next(new ForbiddenError(StatusMessages.FORBIDDEN));
       } else {
         Card.deleteOne(card)
           .then(() => res
-            .status(StatusCodes.SUCCESS)
-            .send({ message: StatusMessages.SUCCESS }));
+              .status(StatusCodes.SUCCESS)
+              .send({ message: StatusMessages.SUCCESS }));
       }
     })
     .catch((err) => {
