@@ -12,9 +12,8 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Добавьте URL карточки'],
     validate: {
-      validator(link) {
-        return validator.isURL(link);
-      },
+      validator: (url) => validator.isURL(url),
+      message: 'Некорректный адрес URL',
     },
   },
   owner: {
