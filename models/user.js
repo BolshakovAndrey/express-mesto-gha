@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const isEmail = require('validator');
-const isUrl = require('validator');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -23,7 +22,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Добавьте аватар'],
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (url) => isUrl(url),
+      validator: (url) => validator.isURL(url),
       message: 'Некорректный адрес URL',
     },
   },
@@ -32,7 +31,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Поле email  должно быть заполнено'],
     unique: true,
     validate: {
-      validator: (email) => isEmail(email),
+      validator: (email) => validator.isEmail(email),
       message: 'Некорректный адрес почты',
     },
 
