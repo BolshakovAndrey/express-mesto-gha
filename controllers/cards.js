@@ -49,16 +49,11 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        next(new NotFoundError(StatusMessages.INVALID_ID));
-        // res
-        //   .status(StatusCodes.NOT_FOUND)
-        //   .send({ message: StatusMessages.INVALID_ID });
-        // return;
-      } else {
-        next(err);
+        throw new NotFoundError(StatusMessages.INVALID_ID);
       }
-    });
-  // .catch(next);
+      next(err);
+    })
+    .catch(next);
 };
 
 // ставит лайк карточке

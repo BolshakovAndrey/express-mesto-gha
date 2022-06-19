@@ -6,7 +6,9 @@ module.exports = ((err, req, res, next) => {
   res
     .status(statusCode)
     .send({
-      message: statusCode === StatusCodes.DEFAULT ? StatusMessages.DEFAULT : err.message,
+      message: statusCode === StatusCodes.DEFAULT
+        ? StatusMessages.DEFAULT
+        : err.message,
     });
   next();
 });

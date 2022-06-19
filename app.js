@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const errorHandler = require('./middlewares/errorHandler');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 // validation
@@ -54,6 +55,7 @@ app.use('*', (req, res, next) => {
 
 // обработчик ошибок celebrate
 app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
