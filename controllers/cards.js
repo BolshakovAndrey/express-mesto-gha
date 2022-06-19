@@ -4,6 +4,7 @@ const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
 const { NotFoundError, BadRequestError } = require('../errors/index-err');
+const ForbiddenError = require('../errors/forbidden-err');
 
 // возвращает все карточки
 module.exports.getCards = (req, res, next) => {
@@ -33,14 +34,12 @@ module.exports.createCard = (req, res, next) => {
 // удаляет карточку по _id
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .orFail(() => {
+      throw new NotFoundError(StatusMessages.NOT_FOUND);
+    })
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError(StatusMessages.NOT_FOUND);
-      }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        res
-          .status(StatusCodes.FORBIDDEN)
-          .send({ message: StatusMessages.FORBIDDEN });
+        throw new ForbiddenError('В доступе отказано');
       } else {
         Card.deleteOne(card)
           .then(() => res
@@ -50,14 +49,16 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .send({ message: StatusMessages.INVALID_ID });
-        return;
+        next(new NotFoundError(StatusMessages.INVALID_ID));
+        // res
+        //   .status(StatusCodes.NOT_FOUND)
+        //   .send({ message: StatusMessages.INVALID_ID });
+        // return;
+      } else {
+        next(err);
       }
-      next(err);
-    })
-    .catch(next);
+    });
+  // .catch(next);
 };
 
 // ставит лайк карточке
