@@ -39,12 +39,11 @@ module.exports.deleteCard = (req, res, next) => {
       }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         return next(new ForbiddenError(StatusMessages.FORBIDDEN));
-      } else {
-        Card.deleteOne(card)
-          .then(() => res
-              .status(StatusCodes.SUCCESS)
-              .send({ message: StatusMessages.SUCCESS }));
       }
+      Card.deleteOne(card)
+        .then(() => res
+          .status(StatusCodes.SUCCESS)
+          .send({ message: StatusMessages.SUCCESS }));
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
