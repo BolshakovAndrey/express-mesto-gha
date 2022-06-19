@@ -3,8 +3,7 @@ const Card = require('../models/card');
 const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
-const { NotFoundError, BadRequestError } = require('../errors/index-err');
-const ForbiddenError = require('../errors/forbidden-err');
+const { NotFoundError, ForbiddenError, BadRequestError } = require('../errors/index-err');
 
 // возвращает все карточки
 module.exports.getCards = (req, res, next) => {
@@ -39,7 +38,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        throw new ForbiddenError('В доступе отказано');
+        throw new ForbiddenError(StatusMessages.FORBIDDEN);
       } else {
         Card.deleteOne(card)
           .then(() => res
