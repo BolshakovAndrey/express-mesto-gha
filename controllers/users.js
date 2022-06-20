@@ -74,7 +74,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new NotFoundError(StatusMessages.INVALID_ID);
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
@@ -84,12 +84,8 @@ module.exports.getUserById = (req, res, next) => {
 // создаёт пользователя
 module.exports.createUser = (req, res, next) => {
   const {
-    email, password, name, about, avatar,
+    email, name, about, avatar,
   } = req.body;
-
-  if (!email || !password) {
-    throw new BadRequestError(StatusMessages.BAD_REQUEST);
-  }
 
   // хэшируем пароль
   bcrypt.hash(req.body.password, 10)
@@ -103,14 +99,14 @@ module.exports.createUser = (req, res, next) => {
         // eslint-disable-next-line consistent-return
         .catch((err) => {
           if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
-            throw new ConflictError(StatusMessages.CONFLICT);
+            next(new ConflictError(StatusMessages.CONFLICT));
           }
           if (err.name === ErrorTypes.VALIDATION) {
-            throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
+            next(new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`));
+          } else {
+            next(err);
           }
-          next(err);
-        })
-        .catch(next);
+        });
     });
 };
 
