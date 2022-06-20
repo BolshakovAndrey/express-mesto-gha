@@ -23,11 +23,11 @@ module.exports.createCard = (req, res, next) => {
       .send(card))
     .catch((err) => {
       if (err.name === ErrorTypes.VALIDATION) {
-        throw new BadRequestError(`Переданы некорректные данные при создании карточки: ${err}`);
+        next(new BadRequestError(`Переданы некорректные данные при создании карточки: ${err}`));
+      } else {
+        next(err);
       }
-      next(err);
-    })
-    .catch(next);
+    });
 };
 
 // удаляет карточку по _id
