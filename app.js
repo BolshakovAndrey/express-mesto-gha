@@ -10,7 +10,7 @@ const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 // validation
 const { validateSignup, validateSignIn } = require('./middlewares/validators');
-const StatusCodes = require('./utils/status-codes');
+const NotFoundError = require('./errors/not-found-err');
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -43,14 +43,8 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('*', (req, res, next) => {
-  try {
-    res
-      .status(StatusCodes.NOT_FOUND)
-      .send({ message: 'Страница не найдена' });
-  } catch (err) {
-    next(err);
-  }
+app.use('*', () => {
+  throw new NotFoundError('Запрашиваемый ресурс не найден');
 });
 
 // обработчик ошибок celebrate
