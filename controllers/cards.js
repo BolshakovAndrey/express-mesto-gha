@@ -38,12 +38,13 @@ module.exports.deleteCard = (req, res, next) => {
         throw new NotFoundError(StatusMessages.NOT_FOUND);
       }
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
-        return next(new ForbiddenError(StatusMessages.FORBIDDEN));
+        throw new ForbiddenError(StatusMessages.FORBIDDEN);
+      } else {
+        Card.deleteOne(card)
+          .then(() => res
+            .status(StatusCodes.SUCCESS)
+            .send({ message: StatusMessages.SUCCESS }));
       }
-      Card.deleteOne(card)
-        .then(() => res
-          .status(StatusCodes.SUCCESS)
-          .send({ message: StatusMessages.SUCCESS }));
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
@@ -69,10 +70,7 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .send({ message: StatusMessages.INVALID_ID });
-        return;
+        throw new NotFoundError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
@@ -94,10 +92,7 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .send({ message: StatusMessages.INVALID_ID });
-        return;
+        throw new NotFoundError(StatusMessages.INVALID_ID);
       }
       next(err);
     })

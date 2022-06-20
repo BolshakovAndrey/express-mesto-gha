@@ -1,5 +1,5 @@
 module.exports = {
-  CAST: 'Error',
+  CAST: 'CastError',
   VALIDATION: 'ValidationError',
   MONGO: 'MongoServerError',
 };
