@@ -40,7 +40,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
         throw new ForbiddenError(StatusMessages.FORBIDDEN);
       } else {
-        Card.deleteOne(card)
+        return Card.deleteOne(card)
           .then(() => res
             .status(StatusCodes.SUCCESS)
             .send({ message: StatusMessages.SUCCESS }));
@@ -48,7 +48,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new NotFoundError(StatusMessages.INVALID_ID);
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
@@ -70,7 +70,7 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new NotFoundError(StatusMessages.INVALID_ID);
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
@@ -92,7 +92,7 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        throw new NotFoundError(StatusMessages.INVALID_ID);
+        throw new BadRequestError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
