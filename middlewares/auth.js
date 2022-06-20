@@ -1,16 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const { NotFoundError } = require('../errors/index-err');
+const { NotFoundError, UnauthorizedError } = require('../errors/index-err');
 const StatusMessages = require('../utils/status-messages');
-const StatusCodes = require('../utils/status-codes');
 const { JWT_SECRET } = require('../utils/constants');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   if (!req.cookies.jwt) {
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .send({ message: StatusMessages.UNAUTHORIZED });
+    throw new NotFoundError(StatusMessages.UNAUTHORIZED);
   }
 
   const token = req.cookies.jwt;
@@ -20,7 +17,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    throw new NotFoundError(StatusMessages.UNAUTHORIZED);
+    throw new UnauthorizedError(StatusMessages.UNAUTHORIZED);
   }
   req.user = payload; // записываем пейлоад в объект запроса
 
