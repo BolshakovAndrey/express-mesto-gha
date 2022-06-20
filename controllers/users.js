@@ -5,16 +5,17 @@ const User = require('../models/user');
 const ErrorTypes = require('../utils/error-types');
 const StatusCodes = require('../utils/status-codes');
 const StatusMessages = require('../utils/status-messages');
-const { BadRequestError, NotFoundError } = require('../errors/index-err');
+const {
+  BadRequestError,
+  UnauthorizedError,
+  NotFoundError,
+  ConflictError,
+} = require('../errors/index-err');
 const { JWT_SECRET } = require('../utils/constants');
 
 // аутентификация пользователей и создание JWT токена
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    throw new BadRequestError(StatusMessages.BAD_REQUEST);
-  }
 
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -32,10 +33,7 @@ module.exports.login = (req, res, next) => {
         .send({ token });
     })
     .catch((err) => {
-      res
-        .status(StatusCodes.UNAUTHORIZED)
-        .send({ message: StatusMessages.UNAUTHORIZED });
-      next(err);
+      throw new UnauthorizedError(`${err.message}`);
     })
     .catch(next);
 };
@@ -76,10 +74,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === ErrorTypes.CAST) {
-        res
-          .status(StatusCodes.NOT_FOUND)
-          .send({ message: StatusMessages.INVALID_ID });
-        return;
+        throw new NotFoundError(StatusMessages.INVALID_ID);
       }
       next(err);
     })
@@ -108,9 +103,7 @@ module.exports.createUser = (req, res, next) => {
         // eslint-disable-next-line consistent-return
         .catch((err) => {
           if (err.name === ErrorTypes.MONGO && err.code === StatusCodes.MONGO_ERROR) {
-            return res
-              .status(StatusCodes.CONFLICT)
-              .send({ message: StatusMessages.CONFLICT });
+            throw new ConflictError(StatusMessages.CONFLICT);
           }
           if (err.name === ErrorTypes.VALIDATION) {
             throw new BadRequestError(`Переданы некорректные данные при создании пользователя: ${err}`);
