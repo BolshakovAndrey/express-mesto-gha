@@ -11,6 +11,8 @@ const { login, createUser } = require('./controllers/users');
 // validation
 const { validateSignup, validateSignIn } = require('./middlewares/validators');
 const NotFoundError = require('./errors/not-found-err');
+// logger
+const { logger, requestLogger, errorLogger } = require('./middlewares/logger');
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -35,6 +37,8 @@ app.use(
   }),
   helmet(),
 );
+app.use(logger);
+app.use(requestLogger); // подключаем логгер запросов
 
 app.post('/signin', validateSignIn, login);
 app.post('/signup', validateSignup, createUser);
@@ -42,6 +46,8 @@ app.post('/signup', validateSignup, createUser);
 app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use('*', () => {
   throw new NotFoundError('Запрашиваемый ресурс не найден');
