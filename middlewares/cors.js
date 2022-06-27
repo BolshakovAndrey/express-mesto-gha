@@ -1,17 +1,19 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
   'https://bolshakov.nomoredomains.xyz',
+  'https://api.bolshakov.nomoredomains.xyz',
   'http://bolshakov.nomoredomains.xyz',
+  'http://api.bolshakov.nomoredomains.xyz',
   'localhost:3000',
 ];
 
 // Значение для заголовка Access-Control-Allow-Methods по умолчанию (разрешены все типы запросов)
-const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
+const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
-  const { method } = req; // Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
+  const { method } = req;// Сохраняем тип запроса (HTTP-метод) в соответствующую переменную
   const requestHeaders = req.headers['access-control-request-headers'];
 
   // проверяем, что источник запроса есть среди разрешённых
